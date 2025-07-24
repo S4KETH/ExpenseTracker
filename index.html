@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Expense Tracker</h1>
+      <div class="space-x-2">
+        <a href="{{ url_for('monthly_summary') }}" class="bg-blue-600 text-white px-4 py-2 rounded">Monthly Summary</a>
+        <a href="{{ url_for('add_edit') }}" class="bg-green-600 text-white px-4 py-2 rounded">Add Expense</a>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-6">
+      <div class="bg-white shadow rounded p-4">
+        <canvas id="expenseChart" data-expenses="{{ expenses | tojson | safe }}"></canvas>
+      </div>
+      <div class="bg-white shadow rounded p-4 overflow-x-auto">
+        <table class="min-w-full">
+          <thead class="bg-blue-600 text-white">
+            <tr>
+              <th class="p-2">Date</th><th class="p-2">Category</th><th class="p-2">Amount</th><th class="p-2">Description</th><th class="p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            {% for e in expenses %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="p-2">{{ e.expense_date }}</td>
+              <td class="p-2">{{ e.category }}</td>
+              <td class="p-2">₹{{ e.amount }}</td>
+              <td class="p-2">{{ e.description }}</td>
+              <td class="p-2 space-x-2">
+                <a href="{{ url_for('add_edit', id=e.id) }}" class="text-blue-600">Edit</a>
+                <a href="{{ url_for('delete', id=e.id) }}" class="text-red-600">Delete</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='chart.js') }}"></script>
+</body>
+</html>
